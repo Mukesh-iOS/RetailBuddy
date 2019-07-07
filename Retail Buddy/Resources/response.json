@@ -1,0 +1,67 @@
+{
+    "categories": [{
+                   "electronics": [{
+                                   "title": "Bajaj 17 L Solo Microwave Oven",
+                                   "type": "Microwave oven",
+                                   "price": "384.61",
+                                   "id": 1
+                                   },
+                                   {
+                                   "title": "Mi LED Smart TV 4A 80 cm (32)",
+                                   "type": "Television",
+                                   "price": "799.99",
+                                   "id": 2
+                                   },
+                                   {
+                                   "title": "MarQ 20 L Solo Microwave Oven",
+                                   "type": "Microwave oven",
+                                   "price": "869.50",
+                                   "id": 3
+                                   },
+                                   {
+                                   "title": "Vu 80cm (32 inch) HD Ready LED TV",
+                                   "type": "Television",
+                                   "price": "1000",
+                                   "id": 4
+                                   },
+                                   {
+                                   "title": "Eureka Forbes Quick Clean DX Dry Vacuum Cleaner (Black, Red)",
+                                   "type": "Vacuum Cleaner",
+                                   "price": "99.87",
+                                   "id": 5
+                                   }
+                                   ],
+                   
+                   "furnitures": [{
+                                 "title": "The Attic Kaliedo Sheesham Solid Wood Coffee Table",
+                                 "type": "Table",
+                                 "price": "230",
+                                 "id": 6
+                                 },
+                                 {
+                                 "title": "Delite Kom Pluto with Hanging rod & Shelves Metal 2 Door Wardrobe",
+                                 "type": "Almirah",
+                                 "price": "850",
+                                 "id": 7
+                                 },
+                                 {
+                                 "title": "Spacewood Winner Engineered Wood Study Table",
+                                 "type": "Table",
+                                 "price": "1100",
+                                 "id": 8
+                                 },
+                                 {
+                                 "title": "HomeTown Allen Engineered Wood 3 Door Almirah",
+                                 "type": "Almirah",
+                                 "price": "1275",
+                                 "id": 9
+                                 },
+                                 {
+                                 "title": "Rajrang Kingsland Solid Wood Living Room Chair",
+                                 "type": "Chair",
+                                 "price": "1799.96",
+                                 "id": 10
+                                 }
+                                 ]
+                   }]
+}
