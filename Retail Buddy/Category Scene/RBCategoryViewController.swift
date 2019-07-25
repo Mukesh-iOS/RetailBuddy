@@ -8,11 +8,6 @@
 
 import UIKit
 
-private enum RBCategoryViewIdentifiers: String {
-    case listVC = "ListViewController"
-    case cartVC = "CartViewController"
-}
-
 class RBCategoryViewController: UIViewController {
     
     @IBOutlet weak var electronicsView: UIView!
@@ -52,7 +47,7 @@ class RBCategoryViewController: UIViewController {
     
     private func pushToListViewControllerWith( category: String) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let listVC = storyboard.instantiateViewController(withIdentifier: RBCategoryViewIdentifiers.listVC.rawValue) as? RBListViewController
+        let listVC = storyboard.instantiateViewController(withIdentifier: RBListViewController.identifier) as? RBListViewController
         
         if let listVC = listVC {
             listVC.categoryType = category
@@ -65,7 +60,7 @@ class RBCategoryViewController: UIViewController {
     @IBAction func cartBtnTapped(_ sender: Any) {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let cartVC = storyboard.instantiateViewController(withIdentifier: RBCategoryViewIdentifiers.cartVC.rawValue) as? RBCartViewController
+        let cartVC = storyboard.instantiateViewController(withIdentifier: RBCartViewController.identifier) as? RBCartViewController
         
         if let cartVC = cartVC {
             self.navigationController?.pushViewController(cartVC, animated: true)

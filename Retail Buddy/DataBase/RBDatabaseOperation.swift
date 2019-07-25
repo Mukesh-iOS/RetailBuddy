@@ -139,4 +139,34 @@ class RBDatabaseOperation: NSObject{
         }
         return nil
     }
+    
+    // MARK: Create fresh datas
+    
+    class func initializeDBWithMockJsonDatas() {
+        if let path = Bundle.main.path(forResource: "response", ofType: "json") {
+            do {
+                let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+                let result = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
+                guard let jsonResult = result as? NSDictionary else {
+                    
+                    return
+                }
+                debugPrint(jsonResult)
+                
+                let results = (jsonResult.value(forKey: ProductIdentifiers.categories.rawValue) as? NSArray)?.firstObject as? NSDictionary
+                
+                if let electronics = (results?.value(forKey: ProductIdentifiers.electronics.rawValue) as? NSArray) , electronics.count > 0 {
+                    // Will check for duplicate before insertion
+                    RBDatabaseOperation.insertDatasInDBWith(lists: electronics, forCategory: ProductIdentifiers.electronics.rawValue)
+                }
+                
+                if let furnitures = (results?.value(forKey: ProductIdentifiers.furnitures.rawValue) as? NSArray) , furnitures.count > 0 {
+                    // Will check for duplicate before insertion
+                    RBDatabaseOperation.insertDatasInDBWith(lists: furnitures, forCategory: ProductIdentifiers.furnitures.rawValue)
+                }
+            } catch let error as NSError {
+                debugPrint(error.localizedDescription)
+            }
+        }
+    }
 }

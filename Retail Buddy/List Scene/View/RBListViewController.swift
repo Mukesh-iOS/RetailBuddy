@@ -8,21 +8,17 @@
 
 import UIKit
 
-private enum RBListViewIdentifiers: String {
-    case cartVC = "CartViewController"
-    case listCell = "ListCell"
-    case ListDetailVC = "ListDetailViewController"
-}
-
 class RBListViewController: UIViewController {
 
     @IBOutlet weak var listTable: UITableView!
     
-    private var ListViewModel: RBListViewModel?
+    static let identifier = "ListViewController"
+    private static let listCell = "ListCell"
+    
+    private var listViewModel: RBListViewModel?
     var categoryType: String?
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         initialSetup()
     }
@@ -35,8 +31,8 @@ class RBListViewController: UIViewController {
             
             return
         }
-        ListViewModel = RBListViewModel()
-        ListViewModel?.fetchProductsFor(Category: categoryType)
+        listViewModel = RBListViewModel()
+        listViewModel?.fetchProductsFor(Category: categoryType)
         
         listTable.rowHeight = UITableView.automaticDimension
         listTable.estimatedRowHeight = 100
@@ -52,7 +48,7 @@ class RBListViewController: UIViewController {
     @IBAction func cartBtnTapped(_ sender: Any) {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let cartVC = storyboard.instantiateViewController(withIdentifier: RBListViewIdentifiers.cartVC.rawValue) as? RBCartViewController
+        let cartVC = storyboard.instantiateViewController(withIdentifier: RBCartViewController.identifier) as? RBCartViewController
         
         if let cartVC = cartVC {
             self.navigationController?.pushViewController(cartVC, animated: true)
@@ -63,29 +59,33 @@ class RBListViewController: UIViewController {
 extension RBListViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return ListViewModel?.products?.count ?? 0
+
+        guard let totalCount = listViewModel?.getTotalCount() else {
+            
+            return 0
+        }
+        return totalCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: RBListViewIdentifiers.listCell.rawValue, for: indexPath) as? RBListCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: RBListViewController.listCell, for: indexPath) as? RBListCell
         guard let listCell = cell else {
             
             return UITableViewCell()
         }
         
-        listCell.setDatawith(product: ListViewModel?.products?[indexPath.row])
+        listCell.setDatawith(product: listViewModel?.getProductInfo(withIndex: indexPath.row))
         return listCell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let listDetailVC = storyboard.instantiateViewController(withIdentifier: RBListViewIdentifiers.ListDetailVC.rawValue) as? RBListDetailViewController
+        let listDetailVC = storyboard.instantiateViewController(withIdentifier: RBListDetailViewController.identifier) as? RBListDetailViewController
         if let listDetailVC = listDetailVC {
             
-            listDetailVC.productInfo = ListViewModel?.products?[indexPath.row]
+            listDetailVC.productInfo = listViewModel?.getProductInfo(withIndex: indexPath.row)
             self.navigationController?.pushViewController(listDetailVC, animated: true)
         }
     }

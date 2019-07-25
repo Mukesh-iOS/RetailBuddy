@@ -10,12 +10,49 @@ import UIKit
 
 class RBCartViewModel: NSObject {
     
-    var cartProducts: [Product]?
-    var totalCartPrice: Double?
+    private var cartProducts: [Product]?
+    private var totalCartPrice: Double?
     
     func fetchCartProducts() {
         cartProducts = RBDatabaseOperation.getCartProducts()
         calculateTotalPrice()
+    }
+    
+    func getCartData(withIndex index: Int) -> Product? {
+        
+        return cartProducts?[index]
+    }
+    
+    func getCartProductsCount() -> Int {
+        
+        return cartProducts?.count ?? 0
+    }
+    
+    func getProductCount() -> String {
+     
+        guard let productCount = cartProducts?.count else {
+            
+            return "No of product(s): 0"
+        }
+        
+        return "No of product(s): \(productCount)"
+    }
+    
+    func getTotalPrice() -> String {
+        
+        guard let totalPrice = totalCartPrice?.format(f: ".2") else {
+            
+            return "0"
+        }
+        return "Total Price: $\(totalPrice)"
+    }
+    
+    func removeCartItemAtIndex(_ index: Int) {
+        
+        if let product = cartProducts?[index] {
+            
+            RBDatabaseOperation.updateCartDetailsForProductID(productID: product.productId, isAddingToCart: false)
+        }
     }
     
     private func calculateTotalPrice() {

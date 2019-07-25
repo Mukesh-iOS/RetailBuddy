@@ -10,9 +10,19 @@ import UIKit
 
 class RBListViewModel: NSObject {
 
-    var products: [Product]?
+    private var products: [Product]?
     
     func fetchProductsFor(Category : String) {
         products = RBDatabaseOperation.getProductsFor(category: Category)
+    }
+    
+    func getTotalCount() -> Int {
+        
+        return products?.count ?? 0
+    }
+    
+    func getProductInfo (withIndex index: Int) -> Product? {
+        
+        return products?[index]
     }
 }

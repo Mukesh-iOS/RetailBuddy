@@ -8,11 +8,6 @@
 
 import UIKit
 
-private enum RBCartViewIdentifiers: String {
-    case cartCell = "CartCell"
-    case listDetailVC = "ListDetailViewController"
-}
-
 private enum RBCartViewConstants: CGFloat {
     case cartTableHeight = 300
 }
@@ -20,6 +15,9 @@ private enum RBCartViewConstants: CGFloat {
 class RBCartViewController: UIViewController {
     
     private var cartViewModel: RBCartViewModel?
+    
+    static let identifier = "CartViewController"
+    private static let cartCell = "CartCell"
     
     @IBOutlet weak var productCount: UILabel!
     @IBOutlet weak var totalPrice: UILabel!
@@ -41,8 +39,8 @@ class RBCartViewController: UIViewController {
     
     private func cartViewSetup() {
         cartViewModel?.fetchCartProducts()
-        productCount.text = "No of product(s): \(cartViewModel?.cartProducts?.count ?? 0)"
-        totalPrice.text = "Total Price : $\(cartViewModel?.totalCartPrice?.format(f: ".2") ?? "0")"
+        productCount.text = cartViewModel?.getProductCount()
+        totalPrice.text = cartViewModel?.getTotalPrice()
         cartTable.reloadData()
     }
     
@@ -55,9 +53,7 @@ class RBCartViewController: UIViewController {
     
     @IBAction func removeProductBtnTapped(_ sender: UIButton) {
         
-        let product = cartViewModel?.cartProducts?[sender.tag]
-        RBDatabaseOperation.updateCartDetailsForProductID(productID: product?.productId ?? 0, isAddingToCart: false)
-        
+        cartViewModel?.removeCartItemAtIndex(sender.tag)
         cartViewSetup()
         cartTable.reloadData()
         
@@ -69,12 +65,16 @@ extension RBCartViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return cartViewModel?.cartProducts?.count ?? 0
+        guard let totalCount = cartViewModel?.getCartProductsCount() else{
+            
+            return 0
+        }
+        return totalCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: RBCartViewIdentifiers.cartCell.rawValue, for: indexPath) as? RBCartCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: RBCartViewController.cartCell, for: indexPath) as? RBCartCell
         
         guard let cartCell = cell else {
             
@@ -82,7 +82,8 @@ extension RBCartViewController: UITableViewDataSource, UITableViewDelegate {
         }
         
         cartCell.removeProductBtn.tag = indexPath.row
-        cartCell.setDataFor(product: cartViewModel?.cartProducts?[indexPath.row])
+        let productData = cartViewModel?.getCartData(withIndex: indexPath.row)
+        cartCell.setDataFor(product: productData)
         return cartCell
     }
     
@@ -94,15 +95,15 @@ extension RBCartViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if let listDetailVC = self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count ?? 0) - 2] as? RBListDetailViewController {
-            listDetailVC.productInfo = cartViewModel?.cartProducts?[indexPath.row]
+            listDetailVC.productInfo = cartViewModel?.getCartData(withIndex: indexPath.row)
             self.navigationController?.popToViewController(listDetailVC, animated: true)
         } else {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let listDetailVC = storyboard.instantiateViewController(withIdentifier: RBCartViewIdentifiers.listDetailVC.rawValue) as? RBListDetailViewController
+            let listDetailVC = storyboard.instantiateViewController(withIdentifier: RBListDetailViewController.identifier) as? RBListDetailViewController
             
             if let listDetailVC = listDetailVC {
                 
-                listDetailVC.productInfo = cartViewModel?.cartProducts?[indexPath.row]
+                listDetailVC.productInfo = cartViewModel?.getCartData(withIndex: indexPath.row)
                 self.navigationController?.pushViewController(listDetailVC, animated: true)
             }
         }
