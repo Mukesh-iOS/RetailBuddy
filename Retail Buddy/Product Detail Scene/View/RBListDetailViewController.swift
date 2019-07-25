@@ -10,12 +10,13 @@ import UIKit
 
 private enum RBListDetailViewIdentifiers: String {
     case title = "Product Details"
-    case cartVC = "CartViewController"
 }
 
 class RBListDetailViewController: UIViewController {
     
     var productInfo: Product?
+    
+    static let identifier = "ListDetailViewController"
     
     @IBOutlet weak var productTitle: UILabel!
     @IBOutlet weak var productPic: UIImageView!
@@ -51,7 +52,7 @@ class RBListDetailViewController: UIViewController {
     @IBAction func cartBtnTapped(_ sender: Any) {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let cartVC = storyboard.instantiateViewController(withIdentifier: RBListDetailViewIdentifiers.cartVC.rawValue) as? RBCartViewController
+        let cartVC = storyboard.instantiateViewController(withIdentifier: RBCartViewController.identifier) as? RBCartViewController
         if let cartVC = cartVC {
             
             self.navigationController?.pushViewController(cartVC, animated: true)
